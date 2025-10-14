@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model User {
+  id         String   @id @default(uuid()) @db.Uuid
+  email      String   @unique
+  name       String?
+  avatar_url String?
+  role       UserRole @default(READER)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  articles       Article[]
+  author_profile Author?
+
+  @@map("users")
+}
+
+enum UserRole {
+  READER
+  AUTHOR
+  ADMIN
+}
+
+// ============================================
+// AUTHORS
+// ============================================
+
+model Author {
+  id          String   @id @default(uuid()) @db.Uuid
+  user_id     String   @unique @db.Uuid
+  username    String   @unique
+  bio         String?  @db.Text
+  website_url String?
+  twitter     String?
+  github      String?
+  linkedin    String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // Relations
+  user     User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  articles Article[]
+
+  @@map("authors")
+}
+
+// ============================================
+// ARTICLES
+// ============================================
+
+model Article {
+  id           String          @id @default(uuid()) @db.Uuid
+  slug         String          @unique
+  title        String
+  content      String          @db.Text
+  excerpt      String?         @db.Text
+  cover_image  String?
+  category     ArticleCategory
+  status       ArticleStatus   @default(DRAFT)
+  featured     Boolean         @default(false)
+  views        Int             @default(0)
+  reading_time Int? // in minutes
+  published_at DateTime?
+  created_at   DateTime        @default(now())
+  updated_at   DateTime        @updatedAt
+
+  // Foreign Keys
+  author_id String @db.Uuid
+
+  // Relations
+  author Author       @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  tags   ArticleTag[]
+  User   User?        @relation(fields: [userId], references: [id])
+  userId String?      @db.Uuid
+
+  @@index([category])
+  @@index([status])
+  @@index([published_at])
+  @@index([featured])
+  @@index([author_id])
+  @@map("articles")
+}
+
+enum ArticleCategory {
+  TECHNOLOGY
+  GADGETS
+  SOFTWARE
+  AI_ML
+  WEB_DEV
+  MOBILE
+  SECURITY
+  CLOUD
+  DATA_SCIENCE
+  BLOCKCHAIN
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// ============================================
+// TAGS
+// ============================================
+
+model Tag {
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String   @unique
+  slug       String   @unique
+  created_at DateTime @default(now())
+
+  // Relations
+  articles ArticleTag[]
+
+  @@map("tags")
+}
+
+model ArticleTag {
+  article_id String @db.Uuid
+  tag_id     String @db.Uuid
+
+  article Article @relation(fields: [article_id], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([article_id, tag_id])
+  @@map("article_tags")
+}
