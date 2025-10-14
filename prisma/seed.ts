@@ -3,7 +3,7 @@ import {
   UserRole,
   ArticleCategory,
   ArticleStatus,
-} from "../app/generated/prisma";
+} from "@prisma/client";
 import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
