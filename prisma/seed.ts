@@ -29,7 +29,11 @@ async function main() {
       data: {
         email: faker.internet.email(),
         name: faker.person.fullName(),
-        avatar_url: faker.image.avatar(),
+        avatar_url: faker.helpers.arrayElement([
+          "https://avatars.githubusercontent.com/u/92562025",
+          "https://avatars.githubusercontent.com/u/34453559",
+          "https://avatars.githubusercontent.com/u/33737598",
+        ]),
         role: faker.helpers.arrayElement(Object.values(UserRole)),
       },
     });

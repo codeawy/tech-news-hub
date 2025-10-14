@@ -4,7 +4,7 @@ import UserCard from "@/components/UserCard";
 export default async function Home() {
   const users = await prisma.user.findMany({
     include: {
-      author_profile: true,
+      author_profile: false,
     },
     orderBy: {
       created_at: "desc",
