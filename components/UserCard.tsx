@@ -1,5 +1,15 @@
 import { User, Author } from "@prisma/client";
 import Image from "next/image";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  CardAction,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface UserCardProps {
   user: User & {
@@ -30,9 +40,8 @@ export default function UserCard({ user }: UserCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
-      {/* Header with Avatar and Role */}
-      <div className="flex items-start justify-between mb-4">
+    <Card className="hover:shadow-md transition-shadow duration-200">
+      <CardHeader>
         <div className="flex items-center space-x-4">
           <div className="relative">
             {user.avatar_url ? (
@@ -52,108 +61,116 @@ export default function UserCard({ user }: UserCardProps) {
             )}
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <CardTitle className="text-lg">
               {user.name || "Anonymous User"}
-            </h3>
-            <p className="text-sm text-gray-600">{user.email}</p>
+            </CardTitle>
+            <CardDescription>{user.email}</CardDescription>
           </div>
         </div>
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(
-            user.role
-          )}`}
-        >
-          {user.role}
-        </span>
-      </div>
+        <CardAction>
+          <Badge
+            variant="outline"
+            className={`px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(
+              user.role
+            )}`}
+          >
+            {user.role}
+          </Badge>
+        </CardAction>
+      </CardHeader>
 
-      {/* Author Profile Section */}
-      {user.author_profile && (
-        <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">
-            Author Profile
-          </h4>
-          <div className="space-y-2">
-            <p className="text-sm">
-              <span className="font-medium">Username:</span> @
-              {user.author_profile.username}
-            </p>
-            {user.author_profile.bio && (
-              <p className="text-sm text-gray-600">{user.author_profile.bio}</p>
-            )}
-            <div className="flex flex-wrap gap-2 mt-2">
-              {user.author_profile.website_url && (
-                <a
-                  href={user.author_profile.website_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded hover:bg-blue-200 transition-colors"
-                >
-                  Website
-                </a>
+      <CardContent>
+        {user.author_profile && (
+          <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">
+              Author Profile
+            </h4>
+            <div className="space-y-2">
+              <p className="text-sm">
+                <span className="font-medium">Username:</span> @
+                {user.author_profile.username}
+              </p>
+              {user.author_profile.bio && (
+                <p className="text-sm text-gray-600">
+                  {user.author_profile.bio}
+                </p>
               )}
-              {user.author_profile.twitter && (
-                <a
-                  href={`https://twitter.com/${user.author_profile.twitter.replace(
-                    "@",
-                    ""
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs bg-sky-100 text-sky-800 px-2 py-1 rounded hover:bg-sky-200 transition-colors"
-                >
-                  Twitter
-                </a>
-              )}
-              {user.author_profile.github && (
-                <a
-                  href={`https://github.com/${user.author_profile.github}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded hover:bg-gray-200 transition-colors"
-                >
-                  GitHub
-                </a>
-              )}
-              {user.author_profile.linkedin && (
-                <a
-                  href={`https://linkedin.com/in/${user.author_profile.linkedin}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded hover:bg-blue-200 transition-colors"
-                >
-                  LinkedIn
-                </a>
-              )}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {user.author_profile.website_url && (
+                  <Badge asChild variant="secondary">
+                    <a
+                      href={user.author_profile.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Website
+                    </a>
+                  </Badge>
+                )}
+                {user.author_profile.twitter && (
+                  <Badge asChild variant="secondary">
+                    <a
+                      href={`https://twitter.com/${user.author_profile.twitter.replace(
+                        "@",
+                        ""
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Twitter
+                    </a>
+                  </Badge>
+                )}
+                {user.author_profile.github && (
+                  <Badge asChild variant="secondary">
+                    <a
+                      href={`https://github.com/${user.author_profile.github}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      GitHub
+                    </a>
+                  </Badge>
+                )}
+                {user.author_profile.linkedin && (
+                  <Badge asChild variant="secondary">
+                    <a
+                      href={`https://linkedin.com/in/${user.author_profile.linkedin}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      LinkedIn
+                    </a>
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* User Stats */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="text-center p-3 bg-gray-50 rounded-lg">
-          <p className="text-xs text-gray-500 uppercase tracking-wide">
-            Member Since
-          </p>
-          <p className="text-sm font-medium text-gray-900">
-            {formatDate(user.created_at)}
-          </p>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="text-center p-3 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-500 uppercase tracking-wide">
+              Member Since
+            </p>
+            <p className="text-sm font-medium text-gray-900">
+              {formatDate(user.created_at)}
+            </p>
+          </div>
+          <div className="text-center p-3 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-500 uppercase tracking-wide">
+              Last Updated
+            </p>
+            <p className="text-sm font-medium text-gray-900">
+              {formatDate(user.updated_at)}
+            </p>
+          </div>
         </div>
-        <div className="text-center p-3 bg-gray-50 rounded-lg">
-          <p className="text-xs text-gray-500 uppercase tracking-wide">
-            Last Updated
-          </p>
-          <p className="text-sm font-medium text-gray-900">
-            {formatDate(user.updated_at)}
-          </p>
-        </div>
-      </div>
+      </CardContent>
 
-      {/* User ID (for debugging/admin purposes) */}
-      <div className="pt-4 border-t border-gray-200">
+      <CardFooter className="border-t">
         <p className="text-xs text-gray-400 font-mono">ID: {user.id}</p>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 }
