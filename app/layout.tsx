@@ -30,9 +30,9 @@ export default function RootLayout({
       >
         <nav className="flex items-center justify-center gap-4 border border-gray-200 py-4">
           <Link href="/">Home</Link>
-          <Link href="/posts">Posts</Link>
-          <Link href="/todos">Todos</Link>
-          <Link href="/tags">Tags</Link>
+          <Link href="/sign-in">Sign In</Link>
+          <Link href="/sign-up">Sign Up</Link>
+          <Link href="/profile">Profile</Link>
         </nav>
         {children}
       </body>
