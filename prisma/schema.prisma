@@ -17,6 +17,8 @@ model User {
   id         String   @id @default(uuid()) @db.Uuid
   email      String   @unique
   name       String?
+  address    String?
+  password   String?
   avatar_url String?
   role       UserRole @default(READER)
   created_at DateTime @default(now())
@@ -25,8 +27,22 @@ model User {
   // Relations
   articles       Article[]
   author_profile Author?
+  accounts       Account[]
 
   @@map("users")
+}
+
+model Account {
+  id                  String  @id @default(uuid()) @db.Uuid
+  userId              String  @unique @db.Uuid
+  provider            String
+  provider_account_id String  @unique // The user's ID from the OAuth provider
+  refresh_token       String?
+  access_token        String?
+  expires_at          Int?
+  User                User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("accounts")
 }
 
 enum UserRole {
