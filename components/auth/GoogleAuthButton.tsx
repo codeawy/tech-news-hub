@@ -5,16 +5,11 @@ import { Loader2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 interface GoogleAuthButtonProps {
-  mode: "signin" | "signup";
   loading?: boolean;
   onClick?: () => void;
 }
 
-export function GoogleAuthButton({
-  mode,
-  loading,
-  onClick,
-}: GoogleAuthButtonProps) {
+export function GoogleAuthButton({ loading, onClick }: GoogleAuthButtonProps) {
   const handleGoogleAuth = async () => {
     if (onClick) {
       onClick();
@@ -24,10 +19,10 @@ export function GoogleAuthButton({
     try {
       const supabase = createClient();
 
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/`,
         },
       });
 

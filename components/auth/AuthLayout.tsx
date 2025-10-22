@@ -40,7 +40,7 @@ export function AuthLayout({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <GoogleAuthButton mode="signin" />
+          <GoogleAuthButton />
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

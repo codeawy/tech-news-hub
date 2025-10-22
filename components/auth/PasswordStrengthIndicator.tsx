@@ -41,7 +41,7 @@ export function PasswordStrengthIndicator({
   password,
   className = "",
 }: PasswordStrengthIndicatorProps) {
-  const { strength, score, metRequirements } = useMemo(() => {
+  const { strength, metRequirements } = useMemo(() => {
     const met = requirements.map((req) => ({
       ...req,
       met: req.test(password),
@@ -52,7 +52,6 @@ export function PasswordStrengthIndicator({
 
     return {
       strength,
-      score,
       metRequirements: met,
     };
   }, [password]);
@@ -94,9 +93,7 @@ export function PasswordStrengthIndicator({
         </div>
         <Progress
           value={strength * 100}
-          className="h-2"
-          // @ts-ignore - Custom color prop
-          color={getStrengthColor(strength)}
+          className={`h-2 ${getStrengthColor(strength)}`}
         />
       </div>
 
