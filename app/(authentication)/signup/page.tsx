@@ -1,10 +1,16 @@
-import { SignupForm } from "@/components/auth/SignupForm";
+import { AuthLayout } from "@/components/auth/AuthLayout";
+import { SignUpForm } from "@/components/auth/SignupForm";
 
-export default function SignupPage() {
+export default function SignUpPage() {
   return (
-    <div className="container mx-auto max-w-md">
-      <h1 className="text-2xl font-bold text-center mb-4">Signup</h1>
-      <SignupForm />
-    </div>
+    <AuthLayout
+      title="Create an account"
+      description="Join and create your perfect resume"
+      linkText="Already have an account?"
+      linkHref="/signin"
+      linkLabel="Sign in"
+    >
+      <SignUpForm />
+    </AuthLayout>
   );
 }

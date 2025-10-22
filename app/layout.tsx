@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { Toaster } from "@/components/ui/sonner";
+import { ProgressBar } from "@/components/ui/progress-bar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ProgressBar />
         <nav className="flex items-center justify-center gap-4 border border-gray-200 py-4">
           <Link href="/">Home</Link>
           <Link href="/signin">Sign In</Link>
@@ -35,6 +38,7 @@ export default function RootLayout({
           <Link href="/dashboard">Dashboard</Link>
         </nav>
         {children}
+        <Toaster />
       </body>
     </html>
   );

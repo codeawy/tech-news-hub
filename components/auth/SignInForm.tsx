@@ -6,55 +6,49 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { PasswordStrengthIndicator } from "@/components/auth/PasswordStrengthIndicator";
-import { signUpSchema, type SignUpFormData } from "@/validation/auth";
-import { signUp } from "@/actions/auth";
+import { signInSchema, type SignInFormData } from "@/validation/auth";
+import { signIn } from "@/actions/auth";
 import { toast } from "sonner";
 
-export function SignUpForm() {
+export function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
-  } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
+  } = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
-      confirmPassword: "",
+      rememberMe: false,
     },
   });
 
-  const watchedPassword = watch("password");
-
-  const onSubmit = async (data: SignUpFormData) => {
+  const onSubmit = async (data: SignInFormData) => {
     setError("");
 
     try {
       console.log("Form data being submitted:", data);
 
       const formDataToSubmit = new FormData();
-      formDataToSubmit.append("username", data.username);
       formDataToSubmit.append("email", data.email);
       formDataToSubmit.append("password", data.password);
-      formDataToSubmit.append("confirmPassword", data.confirmPassword);
+      formDataToSubmit.append("rememberMe", data.rememberMe ? "true" : "false");
 
-      const result = await signUp(formDataToSubmit);
+      const result = await signIn(formDataToSubmit);
       if (result.success) {
         toast.success(result.message);
       } else {
         toast.error(result.message);
       }
     } catch (err) {
-      console.log("Sign up error:", err);
+      console.log("Sign in error:", err);
       setError(
         err instanceof Error
           ? err.message
@@ -72,19 +66,6 @@ export function SignUpForm() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
-          <Input
-            id="username"
-            type="text"
-            placeholder="Enter your username"
-            {...register("username")}
-          />
-          {errors.username && (
-            <p className="text-sm text-red-500">{errors.username.message}</p>
-          )}
-        </div>
-
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -104,7 +85,7 @@ export function SignUpForm() {
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
-              placeholder="Create a password"
+              placeholder="Enter your password"
               {...register("password")}
             />
             <Button
@@ -124,42 +105,23 @@ export function SignUpForm() {
           {errors.password && (
             <p className="text-sm text-red-500">{errors.password.message}</p>
           )}
-          <PasswordStrengthIndicator password={watchedPassword} />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <div className="relative">
-            <Input
-              id="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm your password"
-              {...register("confirmPassword")}
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              {showConfirmPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
-              )}
-            </Button>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Checkbox id="rememberMe" {...register("rememberMe")} />
+            <Label htmlFor="rememberMe" className="text-sm">
+              Remember me
+            </Label>
           </div>
-          {errors.confirmPassword && (
-            <p className="text-sm text-red-500">
-              {errors.confirmPassword.message}
-            </p>
-          )}
+          <Button type="button" variant="link" className="text-sm">
+            Forgot password?
+          </Button>
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Create Account
+          Sign In
         </Button>
       </form>
     </div>
